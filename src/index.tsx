@@ -1,9 +1,11 @@
 import Fuse from "fuse.js";
 import React, {
   ChangeEvent,
+  Dispatch,
   FC,
   KeyboardEvent,
   ReactNode,
+  SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -28,9 +30,13 @@ type Record = { item: { key: string; value: string } };
 
 interface IProps {
   /*
+   * control the state from the parent component.
+   */
+  setValue: Dispatch<SetStateAction<string>>;
+  /*
    * The value, if the component is controlled externally.
    */
-  state?: string;
+  value?: string;
   /*
    * The placeholder text for the input box.
    */
@@ -114,7 +120,8 @@ interface IProps {
 }
 
 const ReactSearchBox: FC<IProps> = ({
-  state = "",
+  value = "",
+  setValue,
   placeholder = "",
   name = "",
   data = [],
@@ -137,13 +144,8 @@ const ReactSearchBox: FC<IProps> = ({
   type = "text",
 }) => {
   const [matchedRecords, setMatchedRecords] = useState<any>([]);
-  const [value, setValue] = useState<string>("");
   const [showDropdown, setDropdownVisibility] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (state) setValue(state);
-  }, [state]);
 
   useOutsideClick(wrapperRef, setDropdownVisibility, setValue, clearInput);
 
